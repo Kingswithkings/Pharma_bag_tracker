@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Pharmacy Bag Tracker</title>
+    <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+    <div class="container">
+        <h1>Pharmacy Bag Tracker</h1>
+        <p class="subtitle">Track which bag goes to which ward and whether it has been returned.</p>
+
+        <div class="stats">
+            <div class="card">
+                <h3>Active Bags</h3>
+                <p>{{ active_bags }}</p>
+            </div>
+            <div class="card">
+                <h3>Returned Bags</h3>
+                <p>{{ returned_bags }}</p>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h2>Assign a Bag</h2>
+            <form method="post" action="/bags" class="form-grid">
+                <input type="text" name="bag_id" placeholder="Bag ID e.g. 170" required />
+                <input type="text" name="ward" placeholder="Ward e.g. 21" required />
+                <input type="text" name="courier" placeholder="Courier e.g. Kings" />
+                <select name="status">
+                    <option value="in_transit">In Transit</option>
+                    <option value="delivered">Delivered</option>
+                    <option value="returned">Returned</option>
+                    <option value="available">Available</option>
+                </select>
+                <input type="text" name="notes" placeholder="Notes (optional)" />
+                <button type="submit">Save Record</button>
+            </form>
+        </div>
+
+        <div class="table-section">
+            <h2>Bag Records</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Bag ID</th>
+                        <th>Ward</th>
+                        <th>Status</th>
+                        <th>Courier</th>
+                        <th>Notes</th>
+                        <th>Updated</th>
+                        <th>Change Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for bag in bags %}
+                    <tr>
+                        <td>{{ bag.bag_id }}</td>
+                        <td>{{ bag.ward }}</td>
+                        <td>{{ bag.status }}</td>
+                        <td>{{ bag.courier or "-" }}</td>
+                        <td>{{ bag.notes or "-" }}</td>
+                        <td>{{ bag.updated_at }}</td>
+                        <td>
+                            <form method="post" action="/bags/{{ bag.id }}/status" class="inline-form">
+                                <select name="status">
+                                    <option value="in_transit">In Transit</option>
+                                    <option value="delivered">Delivered</option>
+                                    <option value="returned">Returned</option>
+                                    <option value="available">Available</option>
+                                </select>
+                                <button type="submit">Update</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
