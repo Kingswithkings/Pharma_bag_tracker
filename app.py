@@ -24,9 +24,9 @@ def home(request: Request, db: Session = Depends(get_db)):
     returned_bags = db.query(BagRecord).filter(BagRecord.status == "returned").count()
 
     return templates.TemplateResponse(
-        "index.html",
-        {
-            "request": request,
+        request=request,
+        name="index.html",
+        context={
             "bags": bags,
             "active_bags": active_bags,
             "returned_bags": returned_bags,
